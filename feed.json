@@ -5,11 +5,27 @@
     "home_page_url": "http://wangboxuexilu.github.io",
     "items": [
         {
+            "id": "http://wangboxuexilu.github.io/2021/03/11/ret2%E7%B3%BB%E5%88%97/",
+            "url": "http://wangboxuexilu.github.io/2021/03/11/ret2%E7%B3%BB%E5%88%97/",
+            "title": "ret2系列",
+            "date_published": "2021-03-11T11:42:42.000Z",
+            "content_html": "<hr>\n<h2 id=\"1ret2text\"><a class=\"markdownIt-Anchor\" href=\"#1ret2text\">#</a> 1.ret2text</h2>\n<p>条件：程序中含有后门函数</p>\n<hr>\n<h2 id=\"2ret2shellcode\"><a class=\"markdownIt-Anchor\" href=\"#2ret2shellcode\">#</a> 2.ret2shellcode</h2>\n<p>条件：程序不开启 NX 保护</p>\n<p>32 位 shellcode：</p>\n<p>shellcode=asm(&quot;&quot;&quot;</p>\n<p>push 0x68  #h</p>\n<p>push 0x732f2f2f   #s///</p>\n<p>push 0x6e69622f   #nib/</p>\n<p>mov ebx,esp  #将 /bin///sh 传入 ebx</p>\n<p>xor ecx,ecx  #ecx 置零</p>\n<p>xor edx,edx  #edx 置零</p>\n<p>push 11</p>\n<p>pop eax  #将 0xb 传入 eax</p>\n<p>int 0x80  #系统调用号</p>\n<p>“”&quot;)</p>\n<p>64 位 shellcode:</p>\n<p>shellcode=asm(&quot;&quot;&quot;</p>\n<p>mov rbx,0x68732f6e69622f  #将 rbx 置为 &quot;hs/nib/&quot;</p>\n<p>push rbx  #将 rbx 压入栈</p>\n<p>push rsp  #将 &quot;hs/nib/&quot; 的地址压入栈</p>\n<p>pop rdi  #将 rdi 设为 bin_sh_address</p>\n<p>xor esi,esi  #将 rsi 低 32 位置零，高八位通常是零，且相比全部置零短一个字节</p>\n<p>xor edx,edx  #将 rdx 低 32 位置零</p>\n<p>push 0x3b</p>\n<p>pop rax  #将 rax 设为 0x3b</p>\n<p>syscall</p>\n<p>“”&quot;)</p>\n<hr>\n<h2 id=\"3ret2syscall\"><a class=\"markdownIt-Anchor\" href=\"#3ret2syscall\">#</a> 3.ret2syscall</h2>\n<p>可用来突破 NX 保护</p>\n<hr>\n<h2 id=\"4ret2libc\"><a class=\"markdownIt-Anchor\" href=\"#4ret2libc\">#</a> 4.ret2libc</h2>\n<p>条件：程序中必须要有 puts,write,printf 之类的输出函数</p>\n<p>可突破 NX 保护</p>\n<p>思路：利用溢出泄露出某一已经执行过的 libc 函数的真实地址，再通过此函数的真实地址与其在 libc 库 symbols 表中的偏移地址，即可计算出 libc 库函数的基址，从而可以计算出 libc 库中任意函数或变量的真实地址</p>\n<p>libc_base=gets_real_address-libc.symbols[“gets”]</p>\n<p>system_real_address=libc_base+libc.symbols[“system”]</p>\n<p>bin_sh_address=libc_base+libc.search(&quot;/bin/sh&quot;)</p>\n<p>例：<img data-src=\"E:%5CDesktop%5CQQ%E6%88%AA%E5%9B%BE20210312193500.png\" alt=\"QQ截图20210312193500\"></p>\n<p><img data-src=\"E:%5CDesktop%5CQQ%E6%88%AA%E5%9B%BE20210312193531.png\" alt=\"QQ截图20210312193531\"></p>\n",
+            "tags": []
+        },
+        {
+            "id": "http://wangboxuexilu.github.io/2021/03/09/%E9%80%86%E5%90%91%E7%AC%94%E8%AE%B0/",
+            "url": "http://wangboxuexilu.github.io/2021/03/09/%E9%80%86%E5%90%91%E7%AC%94%E8%AE%B0/",
+            "title": "逆向笔记",
+            "date_published": "2021-03-09T09:23:24.000Z",
+            "content_html": "<hr>\n<h2 id=\"1查看汇编代码\"><a class=\"markdownIt-Anchor\" href=\"#1查看汇编代码\">#</a> 1. 查看汇编代码</h2>\n<p>objdump  -t  XXX : 查看程序中使用到的函数</p>\n<p>objdump  -d  XXX  ：查看程序中函数的汇编代码</p>\n<p>objdump  -d  -j  .plt  XXX : 查看 plt 表</p>\n<p>-j 的参数有：.text - 代码段</p>\n<p>​                       .const - 只读数据段（有些编译器不使用此段，将只读数据并入.data 段</p>\n<p>​                        .data - 读写数据段</p>\n<p>​                        .bss  -bss 段</p>\n<p>objdump -d -M intel 程序名 |grep 函数名：查看某程序内某函数地址</p>\n<p>objdump -d -j .plt ./filename |grep system : 查找程序中 plt 表中函数地址</p>\n<h2 id=\"2gdb调试\"><a class=\"markdownIt-Anchor\" href=\"#2gdb调试\">#</a> 2.gdb 调试</h2>\n<p>disass XXX : 查看某函数的反汇编</p>\n<p>b  *(地址）在此地址下断点</p>\n<p>set  *(地址）= 地址  改变某地址内容</p>\n<h2 id=\"3常见漏洞\"><a class=\"markdownIt-Anchor\" href=\"#3常见漏洞\">#</a> 3. 常见漏洞</h2>\n<p>1）格式化输出字符串漏洞</p>\n<p>​      printf (“my name is % s”, 参数）</p>\n<p>​      一般来说，printf ()</p>\n<hr>\n<h2 id=\"4ropgadget\"><a class=\"markdownIt-Anchor\" href=\"#4ropgadget\">#</a> 4.ROPgadget</h2>\n<p>ROPgadget -binary ./filename --only “pop|ret” |grep “eax”</p>\n<p>查找 pop eax ;ret 代码片段</p>\n<p>ROPgadget --binary ./filename --string “/bin/sh”</p>\n<p>查找字符串 &quot;/bin/sh&quot; 地址</p>\n",
+            "tags": []
+        },
+        {
             "id": "http://wangboxuexilu.github.io/2021/03/07/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/",
             "url": "http://wangboxuexilu.github.io/2021/03/07/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/",
             "title": "我的第一篇文章",
             "date_published": "2021-03-07T07:22:19.000Z",
-            "content_html": "<hr>\n<h2 id=\"第一章\"><a class=\"markdownIt-Anchor\" href=\"#第一章\">#</a> 第一章</h2>\n<p>夜刀神十香</p>\n<p>神奇的延迟？</p>\n<hr>\n<h2 id=\"第二章\"><a class=\"markdownIt-Anchor\" href=\"#第二章\">#</a> 第二章</h2>\n<p>时崎狂三</p>\n<hr>\n<h2 id=\"bye\"><a class=\"markdownIt-Anchor\" href=\"#bye\">#</a> BYE</h2>\n<p>https:wangboxuexilu.github.io</p>\n",
+            "content_html": "<hr>\n<h2 id=\"1指针\"><a class=\"markdownIt-Anchor\" href=\"#1指针\">#</a> 1. 指针</h2>\n<p>特性：一种全新的类型，四字节宽度，可以进行 ++，–，+，-，&lt;,&gt; 运算</p>\n<p>++：加上去掉一个星号之后的宽度大小</p>\n<p>–：减去去掉一个星号的宽度大小</p>\n<p>+：加上或减去一个整数时</p>\n<p>​      带星类型变量 +（-）N = 带星类型变量 +（-）N 乘（去掉一个星后的类型宽度）</p>\n<p>两个类型相同的带星类型的变量可以进行减法操作（相减的结果要除以去掉一个星后的数据宽度）</p>\n<p>类型相同的带星类型可以做大小的比较</p>\n<p>char* x=“china”#x 保存的是 &quot;china&quot; 的地址，&quot;china&quot; 本身存储在常量区，所以 *（x+1）=‘a’并不能将’h’修改为’a’，因为常量不可写</p>\n<p>char y []=“china”#&quot;china&quot; 也保存在常量区，但 &quot;china&quot; 的拷贝会保存在栈中，所以可以对栈中的 &quot;china&quot; 进行操作</p>\n<hr>\n<h2 id=\"第二章\"><a class=\"markdownIt-Anchor\" href=\"#第二章\">#</a> 第二章</h2>\n<p>时崎狂三</p>\n<hr>\n<h2 id=\"bye\"><a class=\"markdownIt-Anchor\" href=\"#bye\">#</a> BYE</h2>\n<p>https:wangboxuexilu.github.io</p>\n",
             "tags": []
         },
         {

